@@ -1,28 +1,29 @@
+import requests
+import requests.auth
+from django.conf import settings
+
+
 from django.shortcuts import render
 
 
 def index(request):
-    a = 20
-    b = ['a']
+    client_auth = requests.auth.HTTPBasicAuth(settings['REDDIT_KEY'], settings['REDDIT_SECRET'])
+    post_data = {
+        "grant_type": "password",
+        "username": settings["REDDIT_USERNAME"],
+        "password":  settings["REDDIT_USERNAME"],
+    }
+    headers = {"User-Agent": "ChangeMeClient/0.1 by YourUsername"}
+    response = requests.post("https://www.reddit.com/api/v1/access_token", auth=client_auth, data=post_data,
+                             headers=headers)
+    headers = {"Authorization": f"bearer {response.json()['access_token']}",
+               "User-Agent": "ChangeMeClient/0.1 by YourUsername"}
+    response = requests.get("https://oauth.reddit.com/best", headers=headers)
+
+    # response = requests.get("https://www.reddit.com/r/redditdev/hot.json")
+
     ctx = {
-        'a': a,
-        'b': b,
+        'reddit_items': response.json()['data']['children'],
     }
-
-
-    functions = {
-        'a_plus_b': lambda x, y: x + y,
-        'a_mul_b': lambda x, y: x * y,
-        'b_mul_a': lambda x, y: y * x,
-        'a_bitor_b': lambda x, y: x | y,
-        'type_of_a': lambda x, y: str(type(x)),
-        'type_of_b': lambda x, y: str(type(y)),
-    }
-
-    for key, fn in functions.items():
-        try:
-            ctx[key] = fn(a, b)
-        except TypeError:
-            ctx[key] = "*ERROR*"
 
     return render(request, "index.html", context=ctx)

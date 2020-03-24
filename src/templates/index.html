@@ -9,14 +9,10 @@
 </head>
 <h1>Python Tutorial 1</h1>
 <div class="examples">
-    <span>a: {{ a }}</span>
-    <span>b: {{ b }}</span>
-    <span>a + b: {{ a_plus_b }}</span>
-    <span>a * b: {{ a_mul_b }}</span>
-    <span>b * a: {{ b_mul_a }}</span>
-    <span>a | b: {{ a_bitor_b }}</span>
-    <span>type(a): {{ type_of_a }}</span>
-    <span>type(b): {{ type_of_b }}</span>
+    {% for item in reddit_items %}
+        <span>Author: {{ item.data.author_fullname }}</span>
+        <span>Title: {{ item.data.title }}</span>
+    {% endfor %}
 </div>
 </body>
 </html>
