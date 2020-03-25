@@ -11,7 +11,15 @@
 <div class="examples">
     {% for item in reddit_items %}
         <span>Author: {{ item.data.author_fullname }}</span>
-        <span>Title: {{ item.data.title }}</span>
+        <strong><span>Title: {{ item.data.title }}</span></strong>
+        {% if item.status != "failure" %}
+            {% if item.comments %}
+                {% for comment in item.comments %}
+                    <span>Comments:</span>
+                    <span>{{ comment.data.body }}</span>
+                {% endfor %}
+            {% endif %}
+        {% endif %}
     {% endfor %}
 </div>
 </body>
